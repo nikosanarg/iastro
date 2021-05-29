@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iastro</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/brain.js"></script>
+    <script src="dataset.js"></script>
+</head>
+<body>
+    <div class="container" id="resultado">
+        <img src="./assets/rotating-galaxy.gif" height="300px">
+    </div>
+    <div class="controls">
+        <input type="range" min="0.01" max="1" step="0.01" id="mas-input" onchange="updateRed();">
+        <input type="text" id="mas-kpi" readonly value="0.25"><br>
+        <input type="range" min="0.01" max="1" step="0.01" id="rad-input" onchange="updateRed();">
+        <input type="text" id="rad-kpi" readonly value="0.17"><br>
+        <input type="range" min="0.01" max="1" step="0.01" id="eda-input" onchange="updateRed();">
+        <input type="text" id="eda-kpi" readonly value="0.67"><br>
+        <input type="range" min="0.01" max="1" step="0.01" id="exc-input" onchange="updateRed();">
+        <input type="text" id="exc-kpi" readonly value="0.35"><br>
+        <input type="range" min="0.01" max="1" step="0.01" id="tem-input" onchange="updateRed();">
+        <input type="text" id="tem-kpi" readonly value="0.02">
+    </div>
+
+
+
+
+    <script>
+        var red = new brain.NeuralNetwork();
+        const C_NEURONAS = 5;
+        const C_CAPAS = 1;
+        console.log("realizando entrenamiento");
+        console.log(red);
+        red.train(dataset_para_entrenar);
+
+        var input1, input2, input3, input4, input5, 
+            kpi1, kpi2, kpi3, kpi4, kpi5, 
+            output, resultado;
+        input1 = document.getElementById("mas-input");
+        input2 = document.getElementById("rad-input");
+        input3 = document.getElementById("eda-input");
+        input4 = document.getElementById("exc-input");
+        input5 = document.getElementById("tem-input");
+        inputs = [input1, input2, input3, input4, input5]
+        kpi1 = document.getElementById("mas-kpi");
+        kpi2 = document.getElementById("rad-kpi");
+        kpi3 = document.getElementById("eda-kpi");
+        kpi4 = document.getElementById("exc-kpi");
+        kpi5 = document.getElementById("tem-kpi");
+        kpis = [kpi1, kpi2, kpi3, kpi4, kpi5];
+        for (let i = 0; i < C_NEURONAS; i++) kpis[i].value = inputs[i].value = Math.random().toFixed(2);
+
+        function updateRed() {
+            let res = document.getElementById("resultado");
+            for (let i = 0; i < C_NEURONAS; i++) kpis[i].value = inputs[i].value;
+            let input = {
+                mas: inputs[0].value, 
+                rad: inputs[1].value, 
+                eda: inputs[2].value, 
+                exc: inputs[3].value, 
+                temp: inputs[4].value
+            };
+            let output = red.run(input);
+            console.log("Habitabilidad: " + output.hab.toFixed(2)*100 + "%");
+            res.innerHTML = `<img src="./assets/` + "non-habitable-planet" + `.jpg" height="300px">`;
+            return output.hab;
+        }
+    </script>
+</body>
+</html>
