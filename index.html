@@ -23,7 +23,8 @@
         <input type="range" min="0.01" max="1" step="0.01" id="exc-input" onchange="updateRed();">
         <input type="text" id="exc-kpi" readonly value="0.35"><br>
         <input type="range" min="0.01" max="1" step="0.01" id="tem-input" onchange="updateRed();">
-        <input type="text" id="tem-kpi" readonly value="0.02">
+        <input type="text" id="tem-kpi" readonly value="0.02"><br>
+        <input type="text" id="hab-result" class="habitable" readonly value="Habitabilidad: 50%">
     </div>
 
 
@@ -33,19 +34,18 @@
         var red = new brain.NeuralNetwork();
         const C_NEURONAS = 5;
         const C_CAPAS = 1;
-        console.log("realizando entrenamiento");
-        console.log(red);
         red.train(dataset_para_entrenar);
 
         var input1, input2, input3, input4, input5, 
             kpi1, kpi2, kpi3, kpi4, kpi5, 
-            output, resultado;
+            output, resultado, hab;
         input1 = document.getElementById("mas-input");
         input2 = document.getElementById("rad-input");
         input3 = document.getElementById("eda-input");
         input4 = document.getElementById("exc-input");
         input5 = document.getElementById("tem-input");
         inputs = [input1, input2, input3, input4, input5]
+        hab = document.getElementById("hab-result");
         kpi1 = document.getElementById("mas-kpi");
         kpi2 = document.getElementById("rad-kpi");
         kpi3 = document.getElementById("eda-kpi");
@@ -53,6 +53,7 @@
         kpi5 = document.getElementById("tem-kpi");
         kpis = [kpi1, kpi2, kpi3, kpi4, kpi5];
         for (let i = 0; i < C_NEURONAS; i++) kpis[i].value = inputs[i].value = Math.random().toFixed(2);
+
 
         function updateRed() {
             let res = document.getElementById("resultado");
@@ -64,9 +65,17 @@
                 exc: inputs[3].value, 
                 temp: inputs[4].value
             };
-            let output = red.run(input);
-            console.log("Habitabilidad: " + output.hab.toFixed(2)*100 + "%");
-            res.innerHTML = `<img src="./assets/` + "non-habitable-planet" + `.jpg" height="300px">`;
+            let output = red.run(input).hab.toFixed(2);
+            hab.value = "Habitabilidad: " + Math.round(output*100) + "%";
+            if (output > 0.5) {
+                res.innerHTML = `<img src="./assets/` + "habitable-planet" + `.jpg" height="300px" style="opacity: `+ output +`;">`;
+                hab.classList.remove('no-habitable');
+                hab.classList.add('habitable');
+            } else {
+                res.innerHTML = `<img src="./assets/` + "non-habitable-planet" + `.jpg" height="300px" style="opacity: `+ (1 - output) +`;">`;
+                hab.classList.remove('habitable');
+                hab.classList.add('no-habitable');
+            }
             return output.hab;
         }
     </script>

@@ -35,3 +35,17 @@ input[id*="kpi"] {
     padding-top: 20px;
     min-height: 30%;
 }
+
+#hab-result {
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+
+.habitable {
+    color: lime;
+}
+
+.no-habitable {
+    color: red;
+}
