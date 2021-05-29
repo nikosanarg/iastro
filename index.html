@@ -14,14 +14,19 @@
         <img src="./assets/rotating-galaxy.gif" height="300px">
     </div>
     <div class="controls">
+        <label>Masa</label><br>
         <input type="range" min="0.01" max="1" step="0.01" id="mas-input" onchange="updateRed();">
         <input type="text" id="mas-kpi" readonly value="0.25"><br>
+        <label>Radio</label><br>
         <input type="range" min="0.01" max="1" step="0.01" id="rad-input" onchange="updateRed();">
         <input type="text" id="rad-kpi" readonly value="0.17"><br>
+        <label>Edad</label><br>
         <input type="range" min="0.01" max="1" step="0.01" id="eda-input" onchange="updateRed();">
         <input type="text" id="eda-kpi" readonly value="0.67"><br>
+        <label>Excentricidad</label><br>
         <input type="range" min="0.01" max="1" step="0.01" id="exc-input" onchange="updateRed();">
         <input type="text" id="exc-kpi" readonly value="0.35"><br>
+        <label>Temperatura</label><br>
         <input type="range" min="0.01" max="1" step="0.01" id="tem-input" onchange="updateRed();">
         <input type="text" id="tem-kpi" readonly value="0.02"><br>
         <input type="text" id="hab-result" class="habitable" readonly value="Habitabilidad: 50%">
