@@ -15,31 +15,44 @@
     </div>
     <div class="controls">
         <label>Masa</label><br>
-        <input type="range" min="0.01" max="1" step="0.01" id="mas-input" onchange="updateRed();">
-        <input type="text" id="mas-kpi" readonly value="0.25"><br>
+        <!--input type="range" min="0.01" max="1" step="0.01" id="mas-input" onchange="updateRed();"-->
+		<input type="text" min="0.01" step="0.01" id="mas-input" onchange="updateRed();">
+        <input type="text" id="mas-kpi" readonly><br>
         <label>Radio</label><br>
-        <input type="range" min="0.01" max="1" step="0.01" id="rad-input" onchange="updateRed();">
-        <input type="text" id="rad-kpi" readonly value="0.17"><br>
+        <!--input type="range" min="0.01" max="1" step="0.01" id="rad-input" onchange="updateRed();"-->
+		<input type="text" min="0.01" max="1" step="0.01" id="rad-input" onchange="updateRed();">
+        <input type="text" id="rad-kpi" readonly><br>
         <label>Edad</label><br>
-        <input type="range" min="0.01" max="1" step="0.01" id="eda-input" onchange="updateRed();">
-        <input type="text" id="eda-kpi" readonly value="0.67"><br>
+        <!--input type="range" min="0.01" max="1" step="0.01" id="eda-input" onchange="updateRed();"-->
+		<input type="text" min="0.01" step="0.01" id="eda-input" onchange="updateRed();">
+        <input type="text" id="eda-kpi" readonly><br>
         <label>Excentricidad</label><br>
-        <input type="range" min="0.01" max="1" step="0.01" id="exc-input" onchange="updateRed();">
-        <input type="text" id="exc-kpi" readonly value="0.35"><br>
+        <!--input type="range" min="0.01" max="1" step="0.01" id="exc-input" onchange="updateRed();"-->
+		<input type="text" min="0" step="0.01" id="exc-input" onchange="updateRed();">
+        <input type="text" id="exc-kpi" readonly><br>
         <label>Temperatura</label><br>
-        <input type="range" min="0.01" max="1" step="0.01" id="tem-input" onchange="updateRed();">
+        <!--input type="range" min="0.01" max="1" step="0.01" id="tem-input" onchange="updateRed();"-->
+		<input type="text" step="0.01" id="tem-input" onchange="updateRed();">
         <input type="text" id="tem-kpi" readonly value="0.02"><br>
-        <input type="text" id="hab-result" class="habitable" readonly value="Habitabilidad: 50%">
+        <input type="text" id="hab-result" class="habitable" readonly>
     </div>
 
 
 
 
     <script>
-        var red = new brain.NeuralNetwork();
-        const C_NEURONAS = 5;
+		const C_NEURONAS = 5;
         const C_CAPAS = 1;
-        red.train(dataset_para_entrenar);
+        var red = new brain.NeuralNetwork({
+			hiddenLayers: [5, 7, 5]
+		});
+        red.train(dataset_para_entrenar, {
+			errorThresh: 0.005,  // error threshold to reach before completion
+			iterations: 2000,   // maximum training iterations 
+			log: true,           // console.log() progress periodically 
+			logPeriod: 10,       // number of iterations between logging 
+			learningRate: 0.3    // learning rate 
+		});
 
         var input1, input2, input3, input4, input5, 
             kpi1, kpi2, kpi3, kpi4, kpi5, 
@@ -83,6 +96,22 @@
             }
             return output.hab;
         }
+
+		function getHabitabilidad() {
+			let q = dataset_test_habitables.length;
+			console.log(q);
+			var minimo_h = 100;
+			let cont_h = 0;
+			let output;
+			for (let i = 0; i < q; i++) {
+				output = red.run(dataset_test_habitables[i].input).hab;
+				console.log(output);
+				if (output > 0.9) cont_h++;
+				if (output < minimo_h) minimo_h = output;
+			}
+			console.log((cont_h / q * 100) + "%");
+			console.log("minimo = " + minimo_h);
+		}
     </script>
 </body>
 </html>
