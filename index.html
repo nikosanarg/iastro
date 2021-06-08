@@ -16,24 +16,16 @@
     <div class="controls">
         <label>Masa</label><br>
         <!--input type="range" min="0.01" max="1" step="0.01" id="mas-input" onchange="updateRed();"-->
-		<input type="text" min="0.01" step="0.01" id="mas-input" onchange="updateRed();">
+		<input type="text" min="0.01" step="0.01" id="mas-input" value="0.815" onchange="updateRed();">
         <input type="text" id="mas-kpi" readonly><br>
         <label>Radio</label><br>
         <!--input type="range" min="0.01" max="1" step="0.01" id="rad-input" onchange="updateRed();"-->
-		<input type="text" min="0.01" max="1" step="0.01" id="rad-input" onchange="updateRed();">
+		<input type="text" min="0.01" max="1" step="0.01" id="rad-input" value="0.95" onchange="updateRed();">
         <input type="text" id="rad-kpi" readonly><br>
-        <label>Edad</label><br>
-        <!--input type="range" min="0.01" max="1" step="0.01" id="eda-input" onchange="updateRed();"-->
-		<input type="text" min="0.01" step="0.01" id="eda-input" onchange="updateRed();">
-        <input type="text" id="eda-kpi" readonly><br>
-        <label>Excentricidad</label><br>
-        <!--input type="range" min="0.01" max="1" step="0.01" id="exc-input" onchange="updateRed();"-->
-		<input type="text" min="0" step="0.01" id="exc-input" onchange="updateRed();">
-        <input type="text" id="exc-kpi" readonly><br>
         <label>Temperatura</label><br>
         <!--input type="range" min="0.01" max="1" step="0.01" id="tem-input" onchange="updateRed();"-->
-		<input type="text" step="0.01" id="tem-input" onchange="updateRed();">
-        <input type="text" id="tem-kpi" readonly value="0.02"><br>
+		<input type="text" step="0.01" id="tem-input" value="464" onchange="updateRed();">
+        <input type="text" id="tem-kpi" readonly><br>
         <input type="text" id="hab-result" class="habitable" readonly>
     </div>
 
@@ -41,51 +33,47 @@
 
 
     <script>
-		const C_NEURONAS = 5;
-        const C_CAPAS = 1;
-        var red = new brain.NeuralNetwork({
-			hiddenLayers: [5, 7, 5]
-		});
+		const C_ITERATIONS = 50000;
+		var red = new brain.NeuralNetwork();
+        // var red = new brain.NeuralNetwork({
+		// 	hiddenLayers: [3]
+		// });
+		//red.train(dataset_para_entrenar);
         red.train(dataset_para_entrenar, {
-			errorThresh: 0.005,  // error threshold to reach before completion
-			iterations: 2000,   // maximum training iterations 
-			log: true,           // console.log() progress periodically 
-			logPeriod: 10,       // number of iterations between logging 
-			learningRate: 0.3    // learning rate 
+			errorThresh: 0.05,  		// error threshold to reach before completion
+			iterations: C_ITERATIONS,   // maximum training iterations 
+			log: true,           		// console.log() progress periodically 
+			logPeriod: C_ITERATIONS/20,    // number of iterations between logging 
+			learningRate: 0.25    		// learning rate 
 		});
 
-        var input1, input2, input3, input4, input5, 
-            kpi1, kpi2, kpi3, kpi4, kpi5, 
-            output, resultado, hab;
+        var input1, input2, input3, kpi1, kpi2, kpi3, hab, res, crit;
+
         input1 = document.getElementById("mas-input");
         input2 = document.getElementById("rad-input");
-        input3 = document.getElementById("eda-input");
-        input4 = document.getElementById("exc-input");
-        input5 = document.getElementById("tem-input");
-        inputs = [input1, input2, input3, input4, input5]
-        hab = document.getElementById("hab-result");
+        input3 = document.getElementById("tem-input");
+        inputs = [input1, input2, input3]
+        
         kpi1 = document.getElementById("mas-kpi");
         kpi2 = document.getElementById("rad-kpi");
-        kpi3 = document.getElementById("eda-kpi");
-        kpi4 = document.getElementById("exc-kpi");
-        kpi5 = document.getElementById("tem-kpi");
-        kpis = [kpi1, kpi2, kpi3, kpi4, kpi5];
-        for (let i = 0; i < C_NEURONAS; i++) kpis[i].value = inputs[i].value = Math.random().toFixed(2);
+        kpi3 = document.getElementById("tem-kpi");
+        kpis = [kpi1, kpi2, kpi3];
 
+		hab = document.getElementById("hab-result");
+		res = document.getElementById("resultado");
+		crit = 0.5; // MENORES A ESTE VALOR SON NO HABITABLES, MAYORES SON HABITABLES
 
         function updateRed() {
-            let res = document.getElementById("resultado");
-            for (let i = 0; i < C_NEURONAS; i++) kpis[i].value = inputs[i].value;
+            for (let i = 0; i < inputs.length; i++) kpis[i].value = inputs[i].value;
             let input = {
                 mas: inputs[0].value, 
                 rad: inputs[1].value, 
-                eda: inputs[2].value, 
-                exc: inputs[3].value, 
-                temp: inputs[4].value
+                temp: inputs[2].value + 273.15
             };
-            let output = red.run(input).hab.toFixed(2);
+            let output = red.run(input).hab;
+			console.log("["+inputs[0].value + ", " + inputs[1].value + ", " + inputs[2].value + "] -> " + output);
             hab.value = "Habitabilidad: " + Math.round(output*100) + "%";
-            if (output > 0.5) {
+            if (output > crit) {
                 res.innerHTML = `<img src="./assets/` + "habitable-planet" + `.jpg" height="300px" style="opacity: `+ output +`;">`;
                 hab.classList.remove('no-habitable');
                 hab.classList.add('habitable');
@@ -99,18 +87,30 @@
 
 		function getHabitabilidad() {
 			let q = dataset_test_habitables.length;
-			console.log(q);
+			dataset_test_habitables.forEach(elem => {elem.input.temp += 273.15});
 			var minimo_h = 100;
+			var maximo_h = 0;
 			let cont_h = 0;
-			let output;
+			let output, total = 0;
+			let outputs = [];
 			for (let i = 0; i < q; i++) {
 				output = red.run(dataset_test_habitables[i].input).hab;
-				console.log(output);
-				if (output > 0.9) cont_h++;
+				total += output;
+				outputs.push(output);
+				(output >= crit) ? console.log("%c"+(output).toFixed(6), "color: green") : console.log("%c"+(output).toFixed(6), "color: red");
+				if (output > crit) cont_h++;
 				if (output < minimo_h) minimo_h = output;
+				if (output > maximo_h) maximo_h = output;
 			}
-			console.log((cont_h / q * 100) + "%");
-			console.log("minimo = " + minimo_h);
+			let prom = total / q;
+			console.log("De " + q + " planetas, el " + (cont_h / q * 100).toFixed(2) + "% es habitable según el criterio en " + crit);
+			console.log("Mínimo = " + minimo_h.toFixed(5));
+			console.log("Máximo = " + maximo_h.toFixed(5));
+			console.log("Promedio = " + prom.toFixed(5));
+			let outputs2 = outputs.map(element => {return (element - prom)**2});
+			total = 0;
+			outputs2.forEach(element => {total += element});
+			console.log("Desviación estándar = " + Math.sqrt(total / (q - 1)).toFixed(5));
 		}
     </script>
 </body>
