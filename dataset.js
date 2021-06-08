@@ -136,12 +136,12 @@ dataset_para_entrenar = [
 	{input: {mas: 11.1, rad: 1.53, temp: 55.95}, output: {hab: 0}},
 	{input: {mas: 6.56, rad: 1.78, temp: 17.85}, output: {hab: 1}},
 	{input: {mas: 7.04, rad: 1.81, temp: 17.95}, output: {hab: 1}},
-	{input: {mas: 6.56, rad: 1.78, temp: 43.85}, output: {hab: 0.5}},
-	{input: {mas: 4.29, rad: 1.59, temp: 49.75}, output: {hab: 0.5}},
+	{input: {mas: 6.56, rad: 1.78, temp: 43.85}, output: {hab: 1}},
+	{input: {mas: 4.29, rad: 1.59, temp: 49.75}, output: {hab: 0}},
 	{input: {mas: 6.4, rad: 1.77, temp: 8.85}, output: {hab: 1}},
 	{input: {mas: 2.7, rad: 1.4, temp: -14.25}, output: {hab: 1}},
 	{input: {mas: 3.5, rad: 1.25, temp: 70.25}, output: {hab: 0}},
-	{input: {mas: 7.92, rad: 1.87, temp: 47.05}, output: {hab: 0.5}},
+	{input: {mas: 7.92, rad: 1.87, temp: 47.05}, output: {hab: 0}},
 	{input: {mas: 4.26, rad: 1.59, temp: -10.05}, output: {hab: 1}},
 	{input: {mas: 8.3, rad: 1.89, temp: 38.75}, output: {hab: 1}},
 	{input: {mas: 7.75, rad: 1.86, temp: 42.95}, output: {hab: 1}},
@@ -153,8 +153,8 @@ dataset_para_entrenar = [
 	{input: {mas: 7.26, rad: 1.83, temp: -0.45}, output: {hab: 1}},
 	{input: {mas: 16.46, rad: 2.24, temp: 25.55}, output: {hab: 1}},
 	{input: {mas: 13.85, rad: 2.15, temp: 40.85}, output: {hab: 1}},
-	{input: {mas: 2.73, rad: 1.4, temp: -21.75}, output: {hab: 0.5}},
-	{input: {mas: 11.88, rad: 2.07, temp: 50.15}, output: {hab: 0.5}},
+	{input: {mas: 2.73, rad: 1.4, temp: -21.75}, output: {hab: 0}},
+	{input: {mas: 11.88, rad: 2.07, temp: 50.15}, output: {hab: 0}},
 	{input: {mas: 1.02, rad: 1.05, temp: 72.95}, output: {hab: 0}},
 	{input: {mas: 16.81, rad: 2.25, temp: 41.55}, output: {hab: 1}},
 	{input: {mas: 9.9, rad: 1.98, temp: 2.95}, output: {hab: 1}},
@@ -172,7 +172,7 @@ dataset_para_entrenar = [
 	{input: {mas: 14.78, rad: 2.18, temp: -20.25}, output: {hab: 0}}, // kepler174d
 	{input: {mas: 0.055, rad: 0.375, temp: 90}, output: {hab: 0}}, // mercurio
 	{input: {mas: 0.815, rad: 0.95, temp: 464}, output: {hab: 0}}, // venus
-	{input: {mas: 0.107, rad: 0.532, temp: -30}, output: {hab: 0}}, // marte
+	{input: {mas: 0.107, rad: 0.532, temp: -30}, output: {hab: 1}}, // marte
 	{input: {mas: 14.54, rad: 4, temp: -182}, output: {hab: 0}}, // urano
 	{input: {mas: 17.5, rad: 3.9, temp: -214}, output: {hab: 0}}, // neptuno
     {input: {mas: 1, rad: 1, temp: 14}, output: {hab: 1}}, // tierra
@@ -205,12 +205,12 @@ dataset_test_habitables = [
 	{input: {mas: 8.41, rad: 1.9, temp: -4.65}}, 
 	{input: {mas: 15.24, rad: 2.2, temp: 8.75}}, 
 	{input: {mas: 23.6, rad: 2.43, temp: 27.25}}, 
-	{input: {mas: 0.37, rad: 0.77, temp: 43.65}},
 	{input: {mas: 18.45, rad: 2.3, temp: 12.65}}, 
 	{input: {mas: 18.1, rad: 2.29, temp: 26.95}}, 
+	{input: {mas: 25.93, rad: 2.48, temp: 38.55}},
 	{input: {mas: 21.07, rad: 2.37, temp: 41.95}},
 	{input: {mas: 4.1, rad: 1.57, temp: 37.45}}, 
-	{input: {mas: 25.93, rad: 2.48, temp: 38.55}},
+	{input: {mas: 0.37, rad: 0.77, temp: 43.65}},
 	{input: {mas: 9.9, rad: 1.98, temp: 47.85}}, 
 	{input: {mas: 8.07, rad: 1.88, temp: 65.85}}, 
 	{input: {mas: 7.43, rad: 1.84, temp: 66.75}}, 

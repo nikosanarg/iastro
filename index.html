@@ -46,20 +46,19 @@
 
 
 
-		const C_ITERATIONS = 25000;
+		const C_ITERATIONS = 500000;
 
-		var red = new brain.NeuralNetwork();
-        // var red = new brain.NeuralNetwork({
-		// 	hiddenLayers: [3]
-		// });
+		// var red = new brain.NeuralNetwork();
+        var red = new brain.NeuralNetwork({
+			hiddenLayers: [25]
+		});
 
 		formatArray(dataset_para_entrenar);
-		//red.train(dataset_para_entrenar);
         red.train(dataset_para_entrenar, {
-			errorThresh: 0.03,  		// error threshold to reach before completion
+			errorThresh: 0.01,  		// error threshold to reach before completion
 			iterations: C_ITERATIONS,   // maximum training iterations 
 			log: true,           		// console.log() progress periodically 
-			logPeriod: C_ITERATIONS/10, // number of iterations between logging 
+			logPeriod: C_ITERATIONS/25, // number of iterations between logging 
 			learningRate: 0.25    		// learning rate 
 		});
 
@@ -110,10 +109,15 @@
 			let output, total = 0;
 			let outputs = [];
 			for (let i = 0; i < q; i++) {
-				output = red.run(dataset_test_habitables[i].input).hab;
+				let entry = dataset_test_habitables[i].input;
+				output = red.run(entry).hab;
 				total += output;
 				outputs.push(output);
-				(output >= crit) ? console.log("%c"+(output).toFixed(6), "color: green") : console.log("%c"+(output).toFixed(6), "color: red");
+				if (output >= crit) {
+					console.log("%c"+"["+entry.mas.toFixed(3) + ", " + entry.rad.toFixed(3) + ", " + entry.temp.toFixed(3) + "] -> " + (output).toFixed(6), "color: green")
+				} else {
+					console.log("%c"+"["+entry.mas.toFixed(3) + ", " + entry.rad.toFixed(3) + ", " + entry.temp.toFixed(3) + "] -> " + (output).toFixed(6), "color: red");
+				}
 				if (output > crit) cont_h++;
 				if (output < minimo_h) minimo_h = output;
 				if (output > maximo_h) maximo_h = output;
