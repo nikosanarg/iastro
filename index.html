@@ -33,17 +33,33 @@
 
 
     <script>
-		const C_ITERATIONS = 50000;
+		var maxmas = 30, maxrad = 4, maxtemp = 4273.15;
+		function formatArray(arr) {
+			arr.forEach(elem => {
+				elem.input.mas /= maxmas;
+				elem.input.rad /= maxrad;
+				elem.input.temp = (elem.input.temp + 273.15) / maxtemp;
+			});
+			return arr;
+		}
+
+
+
+
+		const C_ITERATIONS = 25000;
+
 		var red = new brain.NeuralNetwork();
         // var red = new brain.NeuralNetwork({
 		// 	hiddenLayers: [3]
 		// });
+
+		formatArray(dataset_para_entrenar);
 		//red.train(dataset_para_entrenar);
         red.train(dataset_para_entrenar, {
-			errorThresh: 0.05,  		// error threshold to reach before completion
+			errorThresh: 0.03,  		// error threshold to reach before completion
 			iterations: C_ITERATIONS,   // maximum training iterations 
 			log: true,           		// console.log() progress periodically 
-			logPeriod: C_ITERATIONS/20,    // number of iterations between logging 
+			logPeriod: C_ITERATIONS/10, // number of iterations between logging 
 			learningRate: 0.25    		// learning rate 
 		});
 
@@ -66,12 +82,12 @@
         function updateRed() {
             for (let i = 0; i < inputs.length; i++) kpis[i].value = inputs[i].value;
             let input = {
-                mas: inputs[0].value, 
-                rad: inputs[1].value, 
-                temp: inputs[2].value + 273.15
+                mas: inputs[0].value / maxmas, 
+                rad: inputs[1].value / maxrad, 
+                temp: (inputs[2].value - 0 + 273.15) / maxtemp
             };
             let output = red.run(input).hab;
-			console.log("["+inputs[0].value + ", " + inputs[1].value + ", " + inputs[2].value + "] -> " + output);
+			console.log("["+input.mas.toFixed(3) + ", " + input.rad.toFixed(3) + ", " + input.temp.toFixed(3) + "] -> " + output.toFixed(3));
             hab.value = "Habitabilidad: " + Math.round(output*100) + "%";
             if (output > crit) {
                 res.innerHTML = `<img src="./assets/` + "habitable-planet" + `.jpg" height="300px" style="opacity: `+ output +`;">`;
@@ -87,7 +103,7 @@
 
 		function getHabitabilidad() {
 			let q = dataset_test_habitables.length;
-			dataset_test_habitables.forEach(elem => {elem.input.temp += 273.15});
+			formatArray(dataset_test_habitables);
 			var minimo_h = 100;
 			var maximo_h = 0;
 			let cont_h = 0;
