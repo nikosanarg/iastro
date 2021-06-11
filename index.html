@@ -46,11 +46,11 @@
 
 
 
-		const C_ITERATIONS = 500000;
+		const C_ITERATIONS = 150000;
 
 		// var red = new brain.NeuralNetwork();
         var red = new brain.NeuralNetwork({
-			hiddenLayers: [25]
+			hiddenLayers: [20]
 		});
 
 		formatArray(dataset_para_entrenar);
@@ -58,8 +58,8 @@
 			errorThresh: 0.01,  		// error threshold to reach before completion
 			iterations: C_ITERATIONS,   // maximum training iterations 
 			log: true,           		// console.log() progress periodically 
-			logPeriod: C_ITERATIONS/25, // number of iterations between logging 
-			learningRate: 0.25    		// learning rate 
+			logPeriod: C_ITERATIONS/10, // number of iterations between logging 
+			learningRate: 0.22    		// learning rate 
 		});
 
         var input1, input2, input3, kpi1, kpi2, kpi3, hab, res, crit;
@@ -76,7 +76,7 @@
 
 		hab = document.getElementById("hab-result");
 		res = document.getElementById("resultado");
-		crit = 0.5; // MENORES A ESTE VALOR SON NO HABITABLES, MAYORES SON HABITABLES
+		crit = 0.783058; // MENORES A ESTE VALOR SON NO HABITABLES, MAYORES SON HABITABLES
 
         function updateRed() {
             for (let i = 0; i < inputs.length; i++) kpis[i].value = inputs[i].value;
@@ -130,7 +130,8 @@
 			let outputs2 = outputs.map(element => {return (element - prom)**2});
 			total = 0;
 			outputs2.forEach(element => {total += element});
-			console.log("Desviación estándar = " + Math.sqrt(total / (q - 1)).toFixed(5));
+			let desv = total / (q - 1).toFixed(5)
+			console.log("Desviación estándar = " + desv);
 		}
     </script>
 </body>
