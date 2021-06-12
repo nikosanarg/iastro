@@ -9,7 +9,7 @@
     <script src="https://unpkg.com/brain.js"></script>
     <script src="dataset.js"></script>
 </head>
-<body>
+<body onload="init()">
     <div class="container" id="resultado">
         <img src="./assets/rotating-galaxy.gif" height="300px">
     </div>
@@ -43,25 +43,14 @@
 			return arr;
 		}
 
-
-
-
 		const C_ITERATIONS = 150000;
 
-		// var red = new brain.NeuralNetwork();
         var red = new brain.NeuralNetwork({
 			hiddenLayers: [20]
 		});
 
 		formatArray(dataset_para_entrenar);
-        red.train(dataset_para_entrenar, {
-			errorThresh: 0.01,  		// error threshold to reach before completion
-			iterations: C_ITERATIONS,   // maximum training iterations 
-			log: true,           		// console.log() progress periodically 
-			logPeriod: C_ITERATIONS/10, // number of iterations between logging 
-			learningRate: 0.22    		// learning rate 
-		});
-
+    
         var input1, input2, input3, kpi1, kpi2, kpi3, hab, res, crit;
 
         input1 = document.getElementById("mas-input");
@@ -77,6 +66,16 @@
 		hab = document.getElementById("hab-result");
 		res = document.getElementById("resultado");
 		crit = 0.783058; // MENORES A ESTE VALOR SON NO HABITABLES, MAYORES SON HABITABLES
+
+		function init() {
+			red.train(dataset_para_entrenar, {
+				errorThresh: 0.01,  		// error threshold to reach before completion
+				iterations: C_ITERATIONS,   // maximum training iterations 
+				log: true,           		// console.log() progress periodically 
+				logPeriod: C_ITERATIONS/10, // number of iterations between logging 
+				learningRate: 0.22    		// learning rate 
+			});
+		}
 
         function updateRed() {
             for (let i = 0; i < inputs.length; i++) kpis[i].value = inputs[i].value;
